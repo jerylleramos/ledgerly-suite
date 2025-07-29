@@ -74,16 +74,16 @@ export async function createInvoice(prevState: State, formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
+  const { customerId, amount, status } = validatedFields.data ?? {};
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
   // Insert the new invoice into the database
   try {
-   await sql`
-    INSERT INTO invoices (customer_id, amount, status, date)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-  `;
+    await sql`
+      INSERT INTO invoices (customer_id, amount, status, date)
+      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    `;
   } catch (error) {
     console.error('Database Error:', error);
   }
@@ -109,8 +109,7 @@ export async function updateInvoice(
       message: 'Missing Fields. Failed to Update Invoice.',
     };
   }
- 
-  const { customerId, amount, status } = validatedFields.data;
+  const { customerId, amount, status } = validatedFields.data ?? {};
   const amountInCents = amount * 100;
  
   try {
@@ -147,8 +146,6 @@ const UpdateCustomer = CustomerFormSchema.omit({ id: true });
 export async function createCustomer(prevState: State, formData: FormData) {
   const validatedFields = CreateCustomer.safeParse({
     name: formData.get('name'),
-    email: formData.get('email'),
-    photo: formData.get('photo'),
   });
   if (!validatedFields.success) {
     return {
