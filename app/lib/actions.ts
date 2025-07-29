@@ -86,8 +86,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
-  } catch (error) {
-    console.error('Database Error:', error);
+  } catch {
+    // Database error
   }
 
   revalidatePath('/dashboard/invoices');
@@ -120,7 +120,7 @@ export async function updateInvoice(
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
-  } catch (error) {
+  } catch {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }
  
@@ -172,7 +172,7 @@ export async function createCustomer(prevState: State, formData: FormData) {
       INSERT INTO customers (name, email, image_url)
       VALUES (${name}, ${email}, ${imageUrl})
     `;
-  } catch (error) {
+  } catch {
     return { message: 'Database Error: Failed to create customer.', errors: {} };
   }
   revalidatePath('/dashboard/customers');
@@ -228,7 +228,7 @@ export async function updateCustomer(id: string, prevState: State, formData: For
         WHERE id = ${id}
       `;
     }
-  } catch (error) {
+  } catch {
     return { message: 'Database Error: Failed to update customer.', errors: {} };
   }
   revalidatePath('/dashboard/customers');

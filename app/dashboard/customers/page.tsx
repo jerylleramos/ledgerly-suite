@@ -1,6 +1,6 @@
 import { fetchCustomersPages, fetchFilteredCustomers } from '@/app/lib/data';
+import Pagination from '@/app/ui/common/pagination';
 import { CreateCustomer } from '@/app/ui/customers/buttons';
-import Pagination from '@/app/ui/customers/pagination';
 import Table from '@/app/ui/customers/table';
 import { lusitana } from '@/app/ui/fonts';
 import Search from '@/app/ui/search';

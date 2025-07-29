@@ -2,6 +2,7 @@
 
 import { State, updateCustomer } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
+import Image from "next/image";
 import { useActionState, useState } from "react";
 
 type Customer = {
@@ -19,11 +20,9 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
     initialState
   );
   const [photoPreview, setPhotoPreview] = useState<string | null>(customer.image_url || null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] || null;
-    setPhotoFile(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
@@ -96,8 +95,8 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
           />
           {photoPreview && (
             <div className="flex items-center gap-2 mt-2">
-              <img src={photoPreview} alt="Current" className="h-20 w-20 rounded-full object-cover border" />
-              <button type="button" className="text-xs text-red-500 underline" onClick={() => { setPhotoPreview(null); setPhotoFile(null); }}>Remove</button>
+              <Image src={photoPreview} alt="Current" width={80} height={80} className="h-20 w-20 rounded-full object-cover border" />
+              <button type="button" className="text-xs text-red-500 underline" onClick={() => { setPhotoPreview(null); }}>Remove</button>
             </div>
           )}
           <div id="photo-error" aria-live="polite" aria-atomic="true">

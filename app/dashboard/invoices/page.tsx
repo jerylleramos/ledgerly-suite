@@ -1,7 +1,7 @@
 import { fetchInvoicesPages } from '@/app/lib/data';
+import Pagination from '@/app/ui/common/pagination';
 import { lusitana } from '@/app/ui/fonts';
 import { CreateInvoice } from '@/app/ui/invoices/buttons';
-import Pagination from '@/app/ui/invoices/pagination';
 import Table, { InvoiceTableRow } from '@/app/ui/invoices/table';
 import Search from '@/app/ui/search';
 import { Metadata } from 'next';

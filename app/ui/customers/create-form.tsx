@@ -2,6 +2,7 @@
 
 import { createCustomer, State } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
+import Image from "next/image";
 import { useActionState, useState } from "react";
 
 export default function Form() {
@@ -11,11 +12,9 @@ export default function Form() {
     initialState
   );
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] || null;
-    setPhotoFile(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
@@ -25,12 +24,8 @@ export default function Form() {
     }
   }
 
-  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-    // No longer required
-  }
-
   return (
-    <form action={formAction} onSubmit={handleFormSubmit}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Name */}
         <div className="mb-4">
@@ -90,8 +85,8 @@ export default function Form() {
           />
           {photoPreview && (
             <div className="flex items-center gap-2 mt-2">
-              <img src={photoPreview} alt="Preview" className="h-20 w-20 rounded-full object-cover border" />
-              <button type="button" className="text-xs text-red-500 underline" onClick={() => { setPhotoPreview(null); setPhotoFile(null); }}>Remove</button>
+              <Image src={photoPreview} alt="Preview" width={80} height={80} className="h-20 w-20 rounded-full object-cover border" />
+              <button type="button" className="text-xs text-red-500 underline" onClick={() => { setPhotoPreview(null); }}>Remove</button>
             </div>
           )}
           <div id="photo-error" aria-live="polite" aria-atomic="true">
