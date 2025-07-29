@@ -1,5 +1,5 @@
 import { fetchCustomerById } from '@/app/lib/data';
-import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
+import Breadcrumbs from '@/app/ui/common/breadcrumbs';
 import Form from '@/app/ui/customers/edit-form';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';

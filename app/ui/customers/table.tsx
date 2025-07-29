@@ -1,11 +1,11 @@
 
-import {
-    FormattedCustomersTable
-} from '@/app/lib/definitions';
+"use client";
+
+import { FormattedCustomersTable } from '@/app/lib/definitions';
 import { DeleteCustomer, UpdateCustomer } from '@/app/ui/customers/buttons';
 import Image from 'next/image';
 
-export default async function CustomersTable({
+export default function CustomersTable({
   customers,
 }: {
   customers: FormattedCustomersTable[];
