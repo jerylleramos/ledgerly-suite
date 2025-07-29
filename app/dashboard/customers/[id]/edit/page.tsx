@@ -8,8 +8,10 @@ export const metadata: Metadata = {
   title: 'Edit Customer',
 };
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const customer = await fetchCustomerById(params.id);
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  const customer = await fetchCustomerById(id);
   if (!customer) {
     notFound();
   }

@@ -1,15 +1,15 @@
 'use client';
 
-import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { State, updateInvoice } from '@/app/lib/actions';
+import type { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { Button } from '@/app/ui/button';
 import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
+    CheckIcon,
+    ClockIcon,
+    CurrencyDollarIcon,
+    UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { Button } from '@/app/ui/button';
-import { updateInvoice, State } from '@/app/lib/actions';
 import { useActionState } from "react";
 
 export default function EditInvoiceForm({
@@ -19,9 +19,41 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
-  const initialState: State = { message: null, errors: {} };
+  const initialState: State = { message: '', errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const [state, formAction] = useActionState(
+    async (prevState: State, formData: FormData) => {
+      const result = await updateInvoiceWithId(prevState, formData);
+      // Always return a State object
+      if (typeof result === 'object' && result && 'errors' in result && 'message' in result) {
+        // result is State
+        return result as State;
+      } else if (typeof result === 'object' && result && 'message' in result && typeof result.message === 'string') {
+        return { errors: {}, message: result.message };
+      } else {
+        return { errors: {}, message: '' };
+      }
+    },
+    initialState
+  );
+  // Ensure errors object always has all possible keys for type safety
+  const errors = {
+    customerId: [],
+    amount: [],
+    status: [],
+    name: [],
+    email: [],
+    photo: [],
+    ...(state.errors || {})
+  } as {
+    customerId: string[];
+    amount: string[];
+    status: string[];
+    name: string[];
+    email: string[];
+    photo: string[];
+  };
+
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -50,8 +82,7 @@ export default function EditInvoiceForm({
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.customerId &&
-              state.errors.customerId.map((error: string) => (
+            {errors.customerId.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
@@ -79,8 +110,7 @@ export default function EditInvoiceForm({
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="amount-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.amount &&
-                state.errors.amount.map((error: string) => (
+              {errors.amount.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
@@ -132,8 +162,7 @@ export default function EditInvoiceForm({
               </div>
             </div>
             <div id="status-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.status &&
-                state.errors.status.map((error: string) => (
+              {errors.status.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
