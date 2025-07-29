@@ -1,9 +1,11 @@
 'use server';
 
 import { signIn } from '@/auth';
+import fs from 'fs';
 import { AuthError } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import path from 'path';
 import postgres from 'postgres';
 import { z } from 'zod';
  
@@ -157,8 +159,6 @@ export async function createCustomer(prevState: State, formData: FormData) {
   let imageUrl = '';
   if (photo && typeof photo === 'object' && 'name' in photo && photo.size > 0) {
     // Save uploaded file to /public/customers/ folder
-    const fs = require('fs');
-    const path = require('path');
     const uploadDir = path.join(process.cwd(), 'public', 'customers');
     if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
     const fileName = `${Date.now()}-${photo.name}`;
@@ -196,8 +196,6 @@ export async function updateCustomer(id: string, prevState: State, formData: For
   let updateImage = false;
   let removeImage = false;
   if (photo && typeof photo === 'object' && 'name' in photo && photo.size > 0) {
-    const fs = require('fs');
-    const path = require('path');
     const uploadDir = path.join(process.cwd(), 'public', 'customers');
     if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
     const fileName = `${Date.now()}-${photo.name}`;

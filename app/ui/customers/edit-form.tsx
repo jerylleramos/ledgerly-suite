@@ -4,7 +4,14 @@ import { State, updateCustomer } from "@/app/lib/actions";
 import { Button } from "@/app/ui/button";
 import { useActionState, useState } from "react";
 
-export default function EditCustomerForm({ customer }: { customer: any }) {
+type Customer = {
+  id: string;
+  name: string;
+  email: string;
+  image_url?: string | null;
+};
+
+export default function EditCustomerForm({ customer }: { customer: Customer }) {
   const initialState: State = { message: '', errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction] = useActionState(
@@ -26,12 +33,8 @@ export default function EditCustomerForm({ customer }: { customer: any }) {
     }
   }
 
-  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-    // No longer required
-  }
-
   return (
-    <form action={formAction} onSubmit={handleFormSubmit}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Name */}
         <div className="mb-4">
