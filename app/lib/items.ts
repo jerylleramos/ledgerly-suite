@@ -7,7 +7,15 @@ import { CreateItem, Item, UpdateItem } from './items-schema';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-
+export type ItemState = {
+  errors: {
+    name?: string[];
+    description?: string[];
+    price?: string[];
+    unit?: string[];
+  };
+  message: string;
+};
 
 export async function getItems() {
   try {
@@ -30,7 +38,7 @@ export async function getItemById(id: string) {
   }
 }
 
-export async function createItem(prevState: any, formData: FormData) {
+export async function createItem(prevState: ItemState, formData: FormData) {
   const validatedFields = CreateItem.safeParse({
     name: formData.get('name'),
     description: formData.get('description'),
@@ -56,7 +64,7 @@ export async function createItem(prevState: any, formData: FormData) {
   redirect('/dashboard/items');
 }
 
-export async function updateItem(id: string, prevState: any, formData: FormData) {
+export async function updateItem(id: string, prevState: ItemState, formData: FormData) {
   const validatedFields = UpdateItem.safeParse({
     name: formData.get('name'),
     description: formData.get('description'),

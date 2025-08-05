@@ -19,7 +19,7 @@ export function CreateItemForm() {
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Name */}
         <div className="mb-4">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">Name *</label>
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">Name <span className="text-red-500">*</span></label>
           <input
             id="name"
             name="name"
@@ -52,7 +52,7 @@ export function CreateItemForm() {
         </div>
         {/* Price */}
         <div className="mb-4">
-          <label htmlFor="price" className="mb-2 block text-sm font-medium">Price *</label>
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">Price <span className="text-red-500">*</span></label>
           <input
             id="price"
             name="price"

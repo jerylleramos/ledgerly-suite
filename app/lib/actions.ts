@@ -148,6 +148,8 @@ const UpdateCustomer = CustomerFormSchema.omit({ id: true });
 export async function createCustomer(prevState: State, formData: FormData) {
   const validatedFields = CreateCustomer.safeParse({
     name: formData.get('name'),
+    email: formData.get('email'),
+    photo: formData.get('photo'),
   });
   if (!validatedFields.success) {
     return {

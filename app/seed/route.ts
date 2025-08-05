@@ -101,7 +101,7 @@ async function seedRevenue() {
   return insertedRevenue;
 }
 
-export async function seedItems() {
+async function seedItems() {
   await sql`
     CREATE TABLE IF NOT EXISTS items (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,

@@ -17,8 +17,12 @@ export function DeleteItemDialog({ item }: { item: Item }) {
       if (!res.ok) throw new Error('Failed to delete item');
       router.push('/items');
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }

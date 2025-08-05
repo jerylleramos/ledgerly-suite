@@ -30,7 +30,7 @@ export default function Form() {
         {/* Name */}
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm font-medium">
-            Name
+            Name <span className="text-red-500">*</span>
           </label>
           <input
             id="name"
@@ -38,6 +38,7 @@ export default function Form() {
             type="text"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="name-error"
+            required
           />
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
@@ -51,7 +52,7 @@ export default function Form() {
         {/* Email */}
         <div className="mb-4">
           <label htmlFor="email" className="mb-2 block text-sm font-medium">
-            Email
+            Email <span className="text-red-500">*</span>
           </label>
           <input
             id="email"
@@ -59,6 +60,7 @@ export default function Form() {
             type="email"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="email-error"
+            required
           />
           <div id="email-error" aria-live="polite" aria-atomic="true">
             {state.errors?.email &&
@@ -72,7 +74,7 @@ export default function Form() {
         {/* Photo Upload */}
         <div className="mb-4">
           <label htmlFor="photo" className="mb-2 block text-sm font-medium">
-            Photo <span className="text-red-500">*</span>
+            Photo
           </label>
           <input
             id="photo"
