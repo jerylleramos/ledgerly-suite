@@ -144,4 +144,28 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
-export { users, customers, invoices, revenue };
+const items = [
+  {
+    id: 'ffb5d12e-1d41-4a35-8aa1-b132b528ecf1',
+    name: 'Premium Hosting',
+    description: 'Managed cloud hosting package with 24/7 support',
+    price: 499.99,
+    unit: 'package',
+  },
+  {
+    id: 'e3cbd7e1-22b3-4530-8cf6-27c29c74ec7d',
+    name: 'Domain Registration',
+    description: 'Annual domain registration fee (.com)',
+    price: 12.00,
+    unit: 'year',
+  },
+  {
+    id: 'b7e6e2f8-83b2-4a0a-9db5-a2d9b03190c9',
+    name: 'Website Maintenance',
+    description: 'Monthly website content and uptime monitoring',
+    price: 99.00,
+    unit: 'month',
+  },
+];
+
+export { users, customers, invoices, revenue, items };

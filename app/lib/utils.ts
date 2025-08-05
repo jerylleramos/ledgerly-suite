@@ -67,3 +67,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const formatPrice = (amount: number) => {
+  return `$${amount.toFixed(2)}`;
+};
