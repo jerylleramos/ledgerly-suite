@@ -21,16 +21,14 @@ The following features and concepts from the official [Next.js Dashboard App tut
 - 🛠️ **Server Actions** for handling form submissions  
 - 🧾 **Invoices Module** with create, read, update, and delete functionality  
 - 📦 **PostgreSQL & Prisma Setup** with schema migrations  
+- 👥 **Customers Module** with listing, details, and CRUD operations  
+- 🛒 **Items Module** for managing product inventory  
 
 ---
 
-## 🚧 What's Next
+## 🤔 What Do You Think Is Next?
 
-I’ll be building the **Customers** module next — which will include:
-
-- Customer listing with pagination and search  
-- Viewing individual customer details  
-- Creating and updating customer data  
+The next best module/update would be to implement **Orders & Transactions**, connecting customers and items, and enabling end-to-end workflow for the dashboard.
 
 ---
 
@@ -39,8 +37,6 @@ I’ll be building the **Customers** module next — which will include:
 To continue expanding my skills and this project, I’m planning or considering the following:
 
 - 🔐 **OAuth Authentication** (e.g., Google or GitHub via NextAuth.js)  
-- 📦 **Products Management**  
-- 📋 **Orders & Transactions Module**  
 - 📈 **Analytics Dashboard with charts**  
 - 🧪 **Unit & Integration Testing** (Jest, React Testing Library)  
 - 🔒 **Role-Based Access Control (RBAC)**  
@@ -48,5 +44,7 @@ To continue expanding my skills and this project, I’m planning or considering 
 - 🌗 **Dark Mode / Theme Switching**  
 - 🌐 **API Routes / Server Actions Enhancements**  
 - 🧹 **Form Validation & Error UX Improvements**  
+- 🛍️ **Advanced Items Management** (categories, stock tracking)  
+- 📝 **Order History & Transaction Reports**  
 
 Feel free to suggest more features that can help improve the project or expand my learning!
