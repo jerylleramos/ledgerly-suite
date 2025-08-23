@@ -17,6 +17,11 @@ const config: Config = {
           500: '#0070F3',
           600: '#2F6FEB',
         },
+        maroon: {
+          DEFAULT: "#853042",
+          light: "#9e4d60",  // lighter tint
+          dark: "#5e2330",   // darker shade
+        }
       },
     },
     keyframes: {
