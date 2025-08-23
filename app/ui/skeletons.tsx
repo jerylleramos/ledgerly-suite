@@ -139,6 +139,95 @@ export function TableRowSkeleton() {
   );
 }
 
+export function ItemsTableRowSkeleton() {
+  return (
+    <tr className="group">
+      {/* Name */}
+      <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
+        <div className="h-6 w-32 rounded bg-gray-100"></div>
+      </td>
+      {/* Price */}
+      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+        <div className="h-6 w-20 rounded bg-gray-100"></div>
+      </td>
+      {/* Unit */}
+      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+        <div className="h-6 w-16 rounded bg-gray-100"></div>
+      </td>
+      {/* Actions */}
+      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
+        <div className="flex gap-2">
+          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
+          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+export function ItemsMobileSkeleton() {
+  return (
+    <div className="mb-2 w-full rounded-md bg-white p-4">
+      <div className="flex items-center justify-between border-b pb-4">
+        <div>
+          <div className="mb-2 flex items-center">
+            <div className="h-6 w-24 rounded bg-gray-100"></div>
+          </div>
+          <div className="h-4 w-12 rounded bg-gray-100"></div>
+        </div>
+        <div className="h-6 w-20 rounded bg-gray-100"></div>
+      </div>
+      <div className="flex gap-2 pt-4">
+        <div className="h-10 w-10 rounded bg-gray-100"></div>
+        <div className="h-10 w-10 rounded bg-gray-100"></div>
+      </div>
+    </div>
+  );
+}
+
+export function ItemsTableSkeleton() {
+  return (
+    <div className="w-full">
+      <div className="mt-6 flow-root">
+        <div className="overflow-x-auto">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
+              {/* Mobile view */}
+              <div className="md:hidden">
+                <ItemsMobileSkeleton />
+                <ItemsMobileSkeleton />
+                <ItemsMobileSkeleton />
+                <ItemsMobileSkeleton />
+                <ItemsMobileSkeleton />
+                <ItemsMobileSkeleton />
+              </div>
+              {/* Desktop table */}
+              <table className="hidden min-w-full rounded-md text-gray-900 md:table">
+                <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
+                  <tr>
+                    <th className="px-4 py-5 font-medium">Name</th>
+                    <th className="px-3 py-5 font-medium">Price</th>
+                    <th className="px-3 py-5 font-medium">Unit</th>
+                    <th className="px-4 py-5 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 text-gray-900">
+                  <ItemsTableRowSkeleton />
+                  <ItemsTableRowSkeleton />
+                  <ItemsTableRowSkeleton />
+                  <ItemsTableRowSkeleton />
+                  <ItemsTableRowSkeleton />
+                  <ItemsTableRowSkeleton />
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function InvoicesMobileSkeleton() {
   return (
     <div className="mb-2 w-full rounded-md bg-white p-4">

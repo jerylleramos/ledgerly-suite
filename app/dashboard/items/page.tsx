@@ -1,11 +1,12 @@
 
-
-import { fetchFilteredItems, fetchItemsPages } from '@/app/lib/items-data';
+import { fetchItemsPages } from '@/app/lib/items-data';
 import Pagination from '@/app/ui/common/pagination';
 import { lusitana } from '@/app/ui/fonts';
 import { CreateItem } from '@/app/ui/items/buttons';
-import { Table } from '@/app/ui/items/table';
+import { ItemsTable } from '@/app/ui/items/table';
 import Search from '@/app/ui/search';
+import { ItemsTableSkeleton } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
 
 import type { PageProps } from '../../../.next/types/app/dashboard/items/page';
 
@@ -23,7 +24,7 @@ export default async function ItemsPage({ searchParams }: PageProps) {
   const query = params?.query ?? '';
   const currentPage = Number(params?.page) || 1;
   const totalPages = await fetchItemsPages(query);
-  const items = await fetchFilteredItems(query, currentPage);
+  
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -33,12 +34,13 @@ export default async function ItemsPage({ searchParams }: PageProps) {
         <Search placeholder="Search items..." />
         <CreateItem />
       </div>
-      <Table items={items} />
+      <Suspense key={query + currentPage} fallback={<ItemsTableSkeleton />}>
+        <ItemsTable query={query} currentPage={currentPage} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
-
 }
 
