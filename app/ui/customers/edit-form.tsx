@@ -21,14 +21,63 @@ export default function EditCustomerForm({ customer }: { customer: Customer }) {
   );
   const [photoPreview, setPhotoPreview] = useState<string | null>(customer.image_url || null);
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] || null;
-    if (file) {
+  // Resize image in browser using canvas and return a File
+  async function resizeImageFile(file: File, maxSize = 80, quality = 0.85): Promise<File> {
+    const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    const url = URL.createObjectURL(file);
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = document.createElement('img') as HTMLImageElement;
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error('Image load error'));
+      i.src = url;
+    });
+    URL.revokeObjectURL(url);
+
+    const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+    const width = Math.round(img.width * ratio);
+    const height = Math.round(img.height * ratio);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas not supported');
+    if (mime === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+    }
+    ctx.drawImage(img, 0, 0, width, height);
+
+    const blob: Blob | null = await new Promise((res) => canvas.toBlob((b) => res(b), mime, quality));
+    if (!blob) throw new Error('Failed to create image blob');
+
+    const ext = mime === 'image/png' ? 'png' : 'jpg';
+    const name = file.name.replace(/\.[^/.]+$/, '') + '.' + ext;
+    return new File([blob], name, { type: mime });
+  }
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    if (!file) {
+      setPhotoPreview(null);
+      return;
+    }
+
+    try {
+  const resized = await resizeImageFile(file, 80, 0.85);
+      const dt = new DataTransfer();
+      dt.items.add(resized);
+      Object.defineProperty(input, 'files', { value: dt.files });
+
+      const reader = new FileReader();
+      reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
+      reader.readAsDataURL(resized);
+    } catch (err) {
+      console.error('Image resize failed, falling back to original', err);
       const reader = new FileReader();
       reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
       reader.readAsDataURL(file);
-    } else {
-      setPhotoPreview(null);
     }
   }
 

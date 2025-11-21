@@ -1,11 +1,10 @@
 'use server';
 
 import { signIn } from '@/auth';
-import fs from 'fs';
+import { put } from '@vercel/blob';
 import { AuthError } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import path from 'path';
 import postgres from 'postgres';
 import { z } from 'zod';
  
@@ -41,12 +40,43 @@ const CreateInvoice = FormSchema.omit({ id: true, date: true });
 // Use Zod to update the expected types
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
+// Type for the shape returned by NextAuth signIn when redirect: false
+type SignInResult = {
+  error?: string | null;
+  ok?: boolean;
+  status?: number;
+  url?: string | null;
+};
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
 ) {
+  const email = formData.get('email')?.toString() ?? '';
+  const password = formData.get('password')?.toString() ?? '';
+  const callbackUrl = formData.get('redirectTo')?.toString() ?? '/dashboard';
+
   try {
-    await signIn('credentials', formData);
+    // Call signIn with redirect: false so we can control the final redirect server-side
+    const result = await signIn('credentials', { redirect: false, email, password, callbackUrl });
+
+    // `signIn` may return an object with { error, ok, status, url }
+    if (!result) return 'Invalid credentials.';
+
+    const signInResult = result as SignInResult;
+
+    // If the provider returned an error, show a friendly message
+    if (signInResult.error) {
+      const err = signInResult.error;
+      if (err === 'CredentialsSignin' || err.toLowerCase().includes('credentials')) {
+        return 'Invalid credentials.';
+      }
+      return err || 'Failed to sign in.';
+    }
+
+    // Successful sign in: perform server-side redirect to the validated URL
+    const url = signInResult.url ?? callbackUrl;
+    redirect(url);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -160,14 +190,23 @@ export async function createCustomer(prevState: State, formData: FormData) {
   const { name, email, photo } = validatedFields.data;
   let imageUrl = '';
   if (photo && typeof photo === 'object' && 'name' in photo && photo.size > 0) {
-    // Save uploaded file to /public/customers/ folder
-    const uploadDir = path.join(process.cwd(), 'public', 'customers');
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-    const fileName = `${Date.now()}-${photo.name}`;
-    const filePath = path.join(uploadDir, fileName);
-    const buffer = Buffer.from(await photo.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
-    imageUrl = `/customers/${fileName}`;
+    try {
+      // Upload file to Vercel Blob
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        console.error('BLOB_READ_WRITE_TOKEN environment variable is not set');
+        return { message: 'Image upload is not configured. Please set BLOB_READ_WRITE_TOKEN environment variable.', errors: {} };
+      }
+      const fileName = `${Date.now()}-${photo.name}`;
+      console.log(`Uploading file: ${fileName}`);
+      const blob = await put(`customers/${fileName}`, photo, {
+        access: 'public',
+      });
+      imageUrl = blob.url;
+      console.log(`File uploaded successfully to: ${imageUrl}`);
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      return { message: `Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`, errors: {} };
+    }
   }
   try {
     await sql`
@@ -197,19 +236,31 @@ export async function updateCustomer(id: string, prevState: State, formData: For
   let imageUrl = '';
   let updateImage = false;
   let removeImage = false;
+  
   if (photo && typeof photo === 'object' && 'name' in photo && photo.size > 0) {
-    const uploadDir = path.join(process.cwd(), 'public', 'customers');
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-    const fileName = `${Date.now()}-${photo.name}`;
-    const filePath = path.join(uploadDir, fileName);
-    const buffer = Buffer.from(await photo.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
-    imageUrl = `/customers/${fileName}`;
-    updateImage = true;
+    try {
+      // Upload file to Vercel Blob
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        console.error('BLOB_READ_WRITE_TOKEN environment variable is not set');
+        return { message: 'Image upload is not configured. Please set BLOB_READ_WRITE_TOKEN environment variable.', errors: {} };
+      }
+      const fileName = `${Date.now()}-${photo.name}`;
+      console.log(`Uploading file: ${fileName}`);
+      const blob = await put(`customers/${fileName}`, photo, {
+        access: 'public',
+      });
+      imageUrl = blob.url;
+      console.log(`File uploaded successfully to: ${imageUrl}`);
+      updateImage = true;
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      return { message: `Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`, errors: {} };
+    }
   } else if (photo === null || photo === '' || (typeof photo === 'string' && photo.length === 0)) {
     // If photo is explicitly removed (input cleared), set image_url to null/empty
     removeImage = true;
   }
+  
   try {
     if (updateImage) {
       await sql`
